@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: laravel-app
+    container_name: backend
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - ./docker/php.ini:/opt/docker/etc/php/php.ini
+      - ./docker/xdebug.ini:/opt/docker/etc/php/php.ini.d/99-xdebug.ini
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - XDEBUG_MODE=${XDEBUG_MODE}
+      - XDEBUG_CLIENT_HOST=${XDEBUG_CLIENT_HOST}
+      - XDEBUG_CLIENT_PORT=${XDEBUG_CLIENT_PORT}
+    depends_on:
+      - mysql
+    ports:
+      - "${APP_PORT}:80"
+    networks:
+      - stackonet
+
+  frontend:
+    image: node:18
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    networks:
+      - stackonet
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - stackonet
+
+volumes:
+  dbdata:
+
+networks:
+  stackonet:
