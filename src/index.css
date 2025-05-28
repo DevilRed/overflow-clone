@@ -1,0 +1,18 @@
+.voteUp i:hover {
+	color: bisque;
+	cursor: pointer;
+}
+
+.voteDown i:hover {
+	color: bisque;
+	cursor: pointer;
+}
+
+/* style for code in react-quill */
+pre.ql-syntax {
+	background-color: #23241f;
+	color: #f8f8f2;
+	overflow: hidden;
+	border-radius: 5px;
+	padding: 25px;
+}
