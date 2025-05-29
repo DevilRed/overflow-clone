@@ -11,13 +11,10 @@ services:
     volumes:
       - ./backend:/app
       - ./docker/php.ini:/opt/docker/etc/php/php.ini
-      - ./docker/xdebug.ini:/opt/docker/etc/php/php.ini.d/99-xdebug.ini
     environment:
       - WEB_DOCUMENT_ROOT=/app/public
-      - XDEBUG_MODE=${XDEBUG_MODE}
-      - XDEBUG_CLIENT_HOST=${XDEBUG_CLIENT_HOST}
-      - XDEBUG_CLIENT_PORT=${XDEBUG_CLIENT_PORT}
-    user: "${UID}:${GID}"
+      - PHP_DISPLAY_ERRORS=1
+    user: application
     depends_on:
       - mysql
     ports:
