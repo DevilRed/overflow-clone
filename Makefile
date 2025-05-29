@@ -24,9 +24,9 @@ help:
 	@echo "$(BLUE)  make logs-backend$(NC)	- Show backend logs"
 	@echo "$(BLUE)  make logs-frontend$(NC)   - Show frontend logs"
 	@echo "$(BLUE)  make logs-mysql$(NC)  	- Show MySQL logs"
-	@echo "$(BLUE)  make exec-backend$(NC)	- Execute bash in backend container"
-	@echo "$(BLUE)  make exec-frontend$(NC)   - Execute bash in frontend container"
-	@echo "$(BLUE)  make exec-mysql$(NC)  	- Execute bash in MySQL container"
+	@echo "$(BLUE)  make ssh-backend$(NC)	- Execute bash in backend container"
+	@echo "$(BLUE)  make ssh-frontend$(NC)   - Execute bash in frontend container"
+	@echo "$(BLUE)  make ssh-mysql$(NC)  	- Execute bash in MySQL container"
 	@echo "$(BLUE)  make status$(NC)      	- Show container status"
 	@echo "$(BLUE)  make xdebug-status$(NC)   - Check Xdebug installation"
 	@echo "$(BLUE)  make xdebug-log$(NC)  	- Show Xdebug logs"
@@ -82,15 +82,15 @@ logs-mysql:
 	docker compose -f $(DOCKER_COMPOSE_FILE) logs -f mysql
 
 ## Execute bash in backend container
-exec-backend:
+ssh-backend:
 	docker compose -f $(DOCKER_COMPOSE_FILE) exec backend /bin/bash
 
 ## Execute bash in frontend container
-exec-frontend:
+ssh-frontend:
 	docker compose -f $(DOCKER_COMPOSE_FILE) exec frontend /bin/sh
 
 ## Execute bash in MySQL container
-exec-mysql:
+ssh-mysql:
 	docker compose -f $(DOCKER_COMPOSE_FILE) exec mysql /bin/bash
 
 ## Show container status
