@@ -1,12 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Header } from "./components/layouts/Header";
 import { Home } from "./components/Home";
-import { Register } from "./components/user/Register";
-import { Login } from "./components/user/Login";
+import { Header } from "./components/layouts/Header";
 import { Ask } from "./components/questions/Ask";
 import { Question } from "./components/questions/Question";
-import { EditAnswer } from "./components/answers/EditAnswer";
+import { Login } from "./components/user/Login";
 import { Profile } from "./components/user/Profile";
+import { Register } from "./components/user/Register";
 
 function App() {
   return (
