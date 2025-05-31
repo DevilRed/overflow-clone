@@ -1,12 +1,85 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getEnvironments } from "../../helpers/getEnvironments";
+import { EnvironmentVariables } from "../../types/env";
 
-const { VITE_BASE_URL } = getEnvironments();
+const { VITE_BASE_URL } = getEnvironments() as EnvironmentVariables;
+
+// Define types for the question data
+interface Question {
+  id: string;
+  title: string;
+  slug: string;
+  // Add other question properties as needed
+  [key: string]: any;
+}
+
+interface Meta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  links?: {
+    first?: string | null;
+    last?: string | null;
+    prev?: string | null;
+    next?: string | null;
+  };
+}
+
+interface QuestionsState {
+  questions: {
+    data: Question[];
+    meta: Meta | null;
+  };
+  question: Question | null;
+  loading: boolean;
+  page: number;
+  error: string | null;
+  choosenTag: string;
+  choosenUser: string;
+  nextPageLink: string | null;
+  prevPageLink: string | null;
+  showAll: boolean;
+}
+
+
+// Define the initial state with type
+const initialState: QuestionsState = {
+  questions: {
+    data: [],
+    meta: null,
+  },
+  question: null,
+  loading: false,
+  page: 1,
+  error: null,
+  choosenTag: "",
+  choosenUser: "",
+  nextPageLink: null,
+  prevPageLink: null,
+  showAll: false,
+};
+
+// Define types for the thunk arguments
+interface FetchQuestionsArgs {
+  page: number;
+  choosenTag?: string;
+  choosenUser?: string;
+}
+
+interface FetchQuestionBySlugArgs {
+  slug: string;
+}
+
+type ErrorType = {
+  message: string | null
+}
+
 
 export const fetchQuestions = createAsyncThunk(
   "questions/fetchQuestions",
-  async ({ page, choosenTag, choosenUser }, { rejectWithValue }) => {
+  async ({ page, choosenTag, choosenUser }: FetchQuestionsArgs, { rejectWithValue }) => {
     let query = `${VITE_BASE_URL}/api/questions?page=${page}`;
 
     if (choosenTag) {
@@ -27,55 +100,47 @@ export const fetchQuestions = createAsyncThunk(
         meta: response.data.meta, // Pagination metadata
         links: response.data.meta.links, // Links for navigation
       };
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "message" in error) {
+        return rejectWithValue((error as ErrorType).message);
+      }
+      return rejectWithValue("An unknown error occurred.");
     }
   }
 );
 
 export const fetchQuestionBySlug = createAsyncThunk(
   "question/fetchQuestionBySlug",
-  async ({ slug }, { rejectWithValue }) => {
+  async ({ slug }: FetchQuestionBySlugArgs, { rejectWithValue }) => {
     const query = `${VITE_BASE_URL}/api/question/${slug}/show`;
     try {
       const response = await axios.get(query);
       return {
         data: response.data.data,
       };
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "message" in error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("An unknown error occurred while fetching the question.");
     }
   }
 );
 
 export const questionsSlice = createSlice({
   name: "questions",
-  initialState: {
-    questions: {
-      data: [], // List of questions
-      meta: null, // Pagination metadata
-    },
-    question: null,
-    loading: false,
-    page: 1,
-    error: null,
-    choosenTag: "",
-    choosenUser: "",
-    nexPageLink: null,
-    prevPageLink: null,
-    showAll: false,
-  },
+  initialState,
   reducers: {
-    setPage: (state, action) => {
+    setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
-    filterQuestionsByTag: (state, action) => {
+    filterQuestionsByTag: (state, action: PayloadAction<string>) => {
       state.choosenTag = action.payload;
       state.choosenUser = "";
       state.page = 1;
       state.showAll = true;
     },
-    filterQuestionsByUser: (state, action) => {
+    filterQuestionsByUser: (state, action: PayloadAction<string>) => {
       state.choosenUser = action.payload;
       state.choosenTag = "";
       state.page = 1;
@@ -87,7 +152,7 @@ export const questionsSlice = createSlice({
       state.page = 1;
       state.showAll = false;
     },
-    fetchNextPrevPage: (state, action) => {
+    fetchNextPrevPage: (state, action: PayloadAction<string>) => {
       const url = new URL(action.payload);
       state.page = Number(url.searchParams.get("page"));
     },
@@ -109,7 +174,7 @@ export const questionsSlice = createSlice({
       })
       .addCase(fetchQuestions.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = typeof action.payload === "string" ? action.payload : String(action.payload);
       });
     builder
       .addCase(fetchQuestionBySlug.pending, (state) => {
