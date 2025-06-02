@@ -7,24 +7,25 @@ import {
   fetchQuestions,
   filterQuestionsByTag,
 } from "../redux/slices/questionSlice";
+import { AppDispatch, RootState } from "../redux/store";
 import { Spinner } from "./layouts/Spinner";
 import { QuestionList } from "./questions/QuestionList";
 
-export const Home = () => {
-  const dispatch = useDispatch();
+export const Home: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { showAll, loading, page, choosenTag, choosenUser } = useSelector(
-    (state) => state.questions
+    (state: RootState) => state.questions
   );
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { isLoggedIn } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     dispatch(fetchQuestions({ page, choosenTag, choosenUser }));
   }, [dispatch, page, choosenTag, choosenUser]);
 
-  const handleFetchNextPrevQuestionPage = (url) => {
+  const handleFetchNextPrevQuestionPage = (url: string) => {
     dispatch(fetchNextPrevPage(url));
   };
-  const handleFilterByTag = (tag) => dispatch(filterQuestionsByTag(tag));
+  const handleFilterByTag = (tag: string) => dispatch(filterQuestionsByTag(tag));
   const handleClearFilter = () => dispatch(clearFilter());
 
   if (loading) {
