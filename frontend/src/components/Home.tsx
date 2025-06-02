@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchQuestions,
-  fetchNextPrevPage,
-  filterQuestionsByTag,
-  clearFilter,
-} from "../redux/slices/questionSlice";
-import { QuestionList } from "./questions/QuestionList";
-import { Spinner } from "./layouts/Spinner";
 import { Link } from "react-router-dom";
+import {
+  clearFilter,
+  fetchNextPrevPage,
+  fetchQuestions,
+  filterQuestionsByTag,
+} from "../redux/slices/questionSlice";
+import { Spinner } from "./layouts/Spinner";
+import { QuestionList } from "./questions/QuestionList";
 
 export const Home = () => {
   const dispatch = useDispatch();

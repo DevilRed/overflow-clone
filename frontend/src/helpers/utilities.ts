@@ -1,4 +1,8 @@
-export const getConfig = (token, contentType) => {
+type locationProps = {
+  pathname: string
+}
+
+export const getConfig = (token: string, contentType: string) => {
   const config = {
     headers: {
       "Content-type": contentType || "application/json",
@@ -8,6 +12,6 @@ export const getConfig = (token, contentType) => {
   return config;
 };
 
-export const setActiveLink = (location, path) => {
+export const setActiveLink = (location: locationProps, path: string) => {
   return location.pathname === path ? "active" : "";
 };
