@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { getEnvironments } from "../../helpers/getEnvironments";
-import { EnvironmentVariables } from "../../types/env";
+import { EnvironmentVariables } from "../../types/";
 
 const { VITE_BASE_URL } = getEnvironments() as EnvironmentVariables;
 

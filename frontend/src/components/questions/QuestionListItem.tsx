@@ -1,12 +1,25 @@
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  filterQuestionsByUser,
   filterQuestionsByTag,
+  filterQuestionsByUser,
 } from "../../redux/slices/questionSlice";
+import { AppDispatch } from "../../redux/store";
+import type { Question } from "../../types";
 
-export const QuestionListItem = ({ question }) => {
-  const dispatch = useDispatch();
+type QuestionListItemProps = {
+  question: Question;
+}
+export const QuestionListItem: React.FC<QuestionListItemProps> = ({ question }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const handleFilterByUser = () => {
+    if(question.user?.id !== undefined) {
+      dispatch(filterQuestionsByUser(question.user.id.toString()));
+    }
+  }
+  const handleFilterByTag = (tag: string) => {
+    dispatch(filterQuestionsByTag(tag));
+  }
 
   return (
     <div className="card mb-2">
@@ -56,9 +69,7 @@ export const QuestionListItem = ({ question }) => {
               />
               <span
                 className="text-primary mx-2"
-                onClick={() => {
-                  dispatch(filterQuestionsByUser(question?.user?.id));
-                }}
+                onClick={handleFilterByUser}
                 style={{ cursor: "pointer" }}
               >
                 {question?.user?.name}
@@ -70,9 +81,7 @@ export const QuestionListItem = ({ question }) => {
                 <span
                   key={index}
                   className="badge bg-primary me-1"
-                  onClick={() => {
-                    dispatch(filterQuestionsByTag(tag));
-                  }}
+                  onClick={() =>  handleFilterByTag(tag)}
                   style={{ cursor: "pointer" }}
                 >
                   {tag}

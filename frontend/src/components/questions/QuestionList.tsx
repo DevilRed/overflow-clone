@@ -1,14 +1,23 @@
 import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { PaginationLink, QuestionsData } from "../../types";
 import { QuestionListItem } from "./QuestionListItem";
 
-export const QuestionList = ({ fetchQuestionsPage }) => {
-  const { questions } = useSelector((state) => state.questions);
+
+type QuestionListProps = {
+  fetchQuestionsPage: (url: string) => void;
+};
+
+export const QuestionList = ({ fetchQuestionsPage }: QuestionListProps) => {
+  const { questions } = useSelector((state: RootState) => ({
+    questions: state.questions.questions as QuestionsData | undefined
+  }));
+
   const renderPaginationLinks = () => (
     <ul className="pagination">
-      {questions?.meta?.links?.map((link, index) => (
+      {questions?.meta?.links?.map((link: PaginationLink, index: number) => (
         <li key={index} className={`page-item ${!link.url ? "disabled" : ""}`}>
-          <a
-            href="#"
+          <button
             onClick={(e) => {
               e.preventDefault();
               if (link.url) {
@@ -16,13 +25,15 @@ export const QuestionList = ({ fetchQuestionsPage }) => {
               }
             }}
             className={`page-link ${link.active ? "active" : ""}`}
+            disabled={!link.url}
           >
             {link.label}
-          </a>
+          </button>
         </li>
       ))}
     </ul>
   );
+
   return (
     <>
       {questions?.data?.map((question) => (
