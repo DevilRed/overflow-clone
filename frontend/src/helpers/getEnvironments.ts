@@ -1,4 +1,4 @@
-import { EnvironmentVariables } from "../types/env";
+import { EnvironmentVariables } from "../types/";
 
 export const getEnvironments = (): EnvironmentVariables => {
   import.meta.env;

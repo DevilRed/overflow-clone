@@ -1,7 +1,8 @@
+import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { toast } from "react-toastify";
 import { getEnvironments } from "../../helpers/getEnvironments";
 import { getConfig, setActiveLink } from "../../helpers/utilities";
 import {
@@ -9,15 +10,15 @@ import {
   setLoggedInOut,
   setToken,
 } from "../../redux/slices/userSlice";
-import { toast } from "react-toastify";
+import { RootState } from "../../redux/store";
 
-export const Header = () => {
+export const Header: React.FC = () => {
   const { VITE_BASE_URL } = getEnvironments();
-  const { isLoggedIn, token, user } = useSelector((state) => state.user);
+  const { isLoggedIn, token, user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getNavLinkClass = (path) => `nav-link ${setActiveLink(location, path)}`;
+  const getNavLinkClass = (path: string) => `nav-link ${setActiveLink(location, path)}`;
 
   useEffect(() => {
     const getLoggedInUser = async () => {

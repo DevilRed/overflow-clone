@@ -2,7 +2,7 @@ type locationProps = {
   pathname: string
 }
 
-export const getConfig = (token: string, contentType: string) => {
+export const getConfig = (token: string, contentType?: string) => {
   const config = {
     headers: {
       "Content-type": contentType || "application/json",
